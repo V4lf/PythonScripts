@@ -3,6 +3,16 @@
 from socket import *
 import optparse
 from threading import *
+import subprocess
+
+def vulnscan(banner):
+        process = subprocess.run(['searchsploit', banner],
+                               stdout=subprocess.PIPE,
+                               universal_newlines=True,
+                               stderr=subprocess.PIPE)
+        print(process.stdout)
+        print(process.stderr)
+
 
 
 def portScan(tgtHost, tgtPorts, checkVersion):
@@ -29,6 +39,7 @@ def connScan(tgtHost, tgtPort, checkVersion):
         if checkVersion:
             banner = sock.recv(1024)
             print("\t" + str(banner))
+            vulnscan(banner)
 
     finally:
         sock.close()
@@ -38,7 +49,7 @@ def main():
     parser = optparse.OptionParser('Usage: ' + '-H <target host> -p <target port>')
     parser.add_option('-H', dest='tgtHost', type='string', help='specify target host')
     parser.add_option('-p', dest='tgtPort', type='string', help='specify target ports seperated by comma')
-    parser.add_option('-sV', dest='checkVersion', action="store_true", help='checkVersion')
+    parser.add_option('-V', dest='checkVersion', action="store_true", help='checkVersion')
     (options, args) = parser.parse_args()
     tgtHost = options.tgtHost
     tgtPorts = str(options.tgtPort).split(',')
