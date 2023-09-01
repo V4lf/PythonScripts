@@ -38,8 +38,11 @@ def connScan(tgtHost, tgtPort, checkVersion):
         print("[+] %d/tcp open" % tgtPort)
         if checkVersion:
             banner = sock.recv(1024)
+            banner = banner.decode("utf-8")
+            banner = banner[0:-2]
             print("\t" + str(banner))
-            vulnscan(banner)
+
+            vulnscan(str(banner).strip('\r').strip('\n'))
 
     finally:
         sock.close()
